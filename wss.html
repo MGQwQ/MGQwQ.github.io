@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+</body>
+<script type="text/javascript">
+const express = require('express');
+const http = require('http');
+const WebSocket = require('ws');
+
+const app = express();
+
+// 创建一个HTTP服务器
+const server = http.createServer(app);
+
+// 创建WebSocket服务器
+const wss = new WebSocket.Server({ noServer: true });
+
+wss.on('connection', (socket) => {
+  console.log('Client connected');
+
+  socket.on('message', (message) => {
+    console.log('Received message:', message);
+    socket.send(`You said: ${message}`);
+  });
+
+  socket.on('close', () => {
+    console.log('Client disconnected');
+  });
+});
+
+// 将WebSocket服务器绑定到HTTP服务器
+server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (socket) => {
+    wss.emit('connection', socket, request);
+  });
+});
+
+// 监听端口
+server.listen(80, () => {
+  console.log('Server started on port 80');
+});
+
+// 监听/ws URL
+app.get('/ws.html', (req, res) => {
+  res.send('WebSocket server is running');
+});
+</script>
+</html>
