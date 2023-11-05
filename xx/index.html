@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>小说</title>
+  <script src="jquery-3.6.0.min.js"></script>
+  <style src="a.css"></style>
+  <style>
+    @font-face {
+    font-family: 'CustomFont';
+      src: url('xx/zh-cn.ttf') format('truetype');
+    }
+    html, body {
+      font-family: 'CustomFont', Arial, sans-serif;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    #records {
+      font-family: 'CustomFont', Arial, sans-serif;
+      display: block;
+      //flex-wrap: wrap;
+      height: 100vh;
+    }
+    #novel {
+      font-family: 'CustomFont', Arial, sans-serif;
+      font-size: 100%;
+      display: block;
+      //flex-wrap: wrap;
+      height: 100vh;
+    }
+    .novel-btn {
+      font-family: 'CustomFont', Arial, sans-serif;
+      display: block;
+      width: 100%;
+      //height: 100%;
+      margin: 10px;
+      //padding: 10px 20px;
+      //background-color: blue;
+      color: white;
+      font-size: 100%;
+      cursor: pointer;
+      background: linear-gradient(to right,#b221ff,#14b7ff);
+    }
+    .record-btn {
+      font-family: 'CustomFont', Arial, sans-serif;
+      display: block;
+      width: 100%;
+      margin: 10px;
+      padding: 10px 20px;
+      //background-color: blue;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      background: linear-gradient(to right,#b221ff,#14b7ff);
+    }
+  </style>
+</head>
+<body>
+  <h1>小说</h1>
+  <div id="records"></div>
+
+  <script>
+var novelContent = document.getElementById('novel');
+function fetchURL(url,i) {
+  var xhr = new XMLHttpRequest();
+  var targetURL = url + i + '.html';
+  xhr.open('GET', targetURL, true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        // 获取到网页内容
+        var content = xhr.responseText;
+        // 将获取到的网页内容添加到 novelContent 中
+        $("#novel").append("<button class='novel-btn'>" + content + "</button>");
+        // 继续循环获取下一个网址
+        i++;
+        fetchURL(url,i);
+      } else {
+        // 到达无法访问的网址，中断循环
+        console.log('无法访问网址：' + targetURL);
+      }
+    }
+  };
+  xhr.send();
+}
+function add(url) {
+  // 获取页面内容
+  console.log(url)
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', url+"/title.html", true);
+  xhr.responseType = 'text'; // 设置响应类型为 text
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      document.getElementById("records").style.display="none";
+      novel=document.createElement('div');
+      novel.id="novel"
+      document.body.appendChild(novel)
+      document.getElementById("novel").style.display="block";
+      // 获取文本内容
+      console.log(xhr)
+      var content = xhr.responseText;
+      console.log(content);
+      $("#novel").append("<button class='record-btn'>" + content + "</button>");
+      fetchURL(url+"/",0);
+    }
+  };
+  xhr.send();
+}
+    $(document).ready(function() {
+      var i = 0;
+      function fetchRecord() {
+        var url = "xx/" + i;
+        $.ajax({
+          url: url,
+          type: "GET",
+          success: function(data, status) {
+            // 如果访问成功，将记录添加到网页上
+              var xhr = new XMLHttpRequest();
+              var xhr = new XMLHttpRequest();
+              xhr.open('GET', url+"/title0.html", true);
+              xhr.responseType = 'text'; // 设置响应类型为 text
+              xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                  // 获取文本内容
+                  var content = xhr.responseText;
+                  $("#records").append("<button class='record-btn' id="+url+" onclick='add(\""+url+"\")'>" + content + "</button>");
+                }
+              };
+              xhr.send();
+            i++;
+            fetchRecord(); // 继续下一个请求
+          },
+          error: function(xhr, status, error) {
+            if (xhr.status === 404) {
+              console.log("已到达最大访问数或出现404错误");
+            } else {
+              console.log("发生错误：" + error);
+            }
+          }
+        });
+      }
+      fetchRecord(); // 开始第一次请求
+    });
+  </script>
+</body>
+</html>
