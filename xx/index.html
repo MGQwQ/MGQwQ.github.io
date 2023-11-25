@@ -5,33 +5,28 @@
   <meta charset="UTF-8">
   <title>小说</title>
   <script src="jquery-3.6.0.min.js"></script>
-  <style src="a.css"></style>
   <style>
-    @font-face {
-    font-family: 'CustomFont';
-      src: url('xx/zh-cn.ttf') format('truetype');
-    }
     html, body {
-      font-family: 'CustomFont', Arial, sans-serif;
+
       height: 100%;
       margin: 0;
       padding: 0;
     }
     #records {
-      font-family: 'CustomFont', Arial, sans-serif;
+
       display: block;
       //flex-wrap: wrap;
       height: 100vh;
     }
     #novel {
-      font-family: 'CustomFont', Arial, sans-serif;
+
       font-size: 100%;
       display: block;
       //flex-wrap: wrap;
       height: 100vh;
     }
     .novel-btn {
-      font-family: 'CustomFont', Arial, sans-serif;
+
       display: block;
       width: 100%;
       //height: 100%;
@@ -44,7 +39,7 @@
       background: linear-gradient(to right,#b221ff,#14b7ff);
     }
     .record-btn {
-      font-family: 'CustomFont', Arial, sans-serif;
+
       display: block;
       width: 100%;
       margin: 10px;
@@ -111,7 +106,7 @@ function add(url) {
     $(document).ready(function() {
       var i = 0;
       function fetchRecord() {
-        var url = "xx/" + i;
+        var url = "xx/" + i + "/title.html";
         $.ajax({
           url: url,
           type: "GET",
