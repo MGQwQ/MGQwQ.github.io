@@ -106,15 +106,14 @@ function add(url) {
     $(document).ready(function() {
       var i = 0;
       function fetchRecord() {
-        var url = "xx/" + i + "/title.html";
+        var url = "xx/" + i;
         $.ajax({
-          url: url,
+          url: url+"/title.html",
           type: "GET",
           success: function(data, status) {
             // 如果访问成功，将记录添加到网页上
               var xhr = new XMLHttpRequest();
-              var xhr = new XMLHttpRequest();
-              xhr.open('GET', url+"", true);
+              xhr.open('GET', url+"/title0.html", true);
               xhr.responseType = 'text'; // 设置响应类型为 text
               xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
