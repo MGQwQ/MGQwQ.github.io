@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RC4</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+  <script>
+function encrypt(text, password) {
+  let S = Array.from(Array(256).keys());
+  let j = 0;
+  let key = Array.from(password, c => c.charCodeAt(0));
+  let keylen = key.length;
+
+  // 初始化S盒
+  for (let i = 0; i < 256; i++) {
+    j = (j + S[i] + key[i % keylen]) % 256;
+    [S[i], S[j]] = [S[j], S[i]];
+  }
+
+  // 生成密钥流
+  let i = 0;
+  j = 0;
+  let keystream = [];
+  for (let k = 0; k < text.length; k++) {
+    i = (i + 1) % 256;
+    j = (j + S[i]) % 256;
+    [S[i], S[j]] = [S[j], S[i]];
+    keystream.push(S[(S[i] + S[j]) % 256]);
+  }
+
+  // 加密文本
+  let ciphertext = "";
+  for (let k = 0; k < text.length; k++) {
+    ciphertext += String.fromCharCode(text.charCodeAt(k) ^ keystream[k]);
+  }
+
+  return ciphertext;
+}
+
+function decrypt(ciphertext, password) {
+  return encrypt(ciphertext, password);
+}
+    function handleRequest() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode');
+      const text = urlParams.get('text');
+      const password = urlParams.get('password');
+      let result = '';
+      var status = 200;
+      var msg = 'ok';
+      try{
+      if (!mode  || !text || !password ){
+        status = 502;
+        msg = 'Incomplete parameter';
+      } else if (mode === 'encrypt') {
+        result = encrypt(text, password);
+      } else if (mode === 'decrypt') {
+        result = decrypt(text, password);
+      } else {
+        status: 502;
+        msg = 'Invalid mode';
+      }
+      }catch(error){
+        status: 502;
+        msg=error;
+      }
+      const response = {
+        status: status,
+        msg: msg,
+        result: result
+      };
+
+      document.getElementById('output').innerHTML = JSON.stringify(response);
+    }
+  </script>
+</head>
+<body onload="handleRequest()">
+  <div id="output"></div>
+</body>
+</html>
